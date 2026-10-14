@@ -10,7 +10,7 @@
 
 # FIX: all the operations below (ip/iptables/sysctl/systemd files) need root.
 if [ "$(id -u)" -ne 0 ]; then
-    echo "این اسکریپت باید با دسترسی root اجرا بشه (مثلا: sudo ./script.sh)"
+    echo "This script must be run with root privileges (e.g.: sudo ./script.sh)"
     exit 1
 fi
 
@@ -249,7 +249,7 @@ handle_six_to_four() {
             read -p "Enter the IP Iran (remote): " ipiran
 
             if ! is_valid_ipv4 "$ipkharej" || ! is_valid_ipv4 "$ipiran"; then
-                echo "IP وارد شده معتبر نیست. دوباره اجرا کن و آدرس درست بده."
+                echo "The IP you entered is not valid. Run this again and provide correct addresses."
                 return 1
             fi
 
@@ -274,7 +274,7 @@ EOF
             read -p "Enter the IP outside (remote): " ipkharej
 
             if ! is_valid_ipv4 "$ipkharej" || ! is_valid_ipv4 "$ipiran"; then
-                echo "IP وارد شده معتبر نیست. دوباره اجرا کن و آدرس درست بده."
+                echo "The IP you entered is not valid. Run this again and provide correct addresses."
                 return 1
             fi
 
@@ -321,12 +321,12 @@ EOF
 # could have created on either side, reporting exactly what it found.
 # ---------------------------------------------------------------------------
 uninstall_tunnel() {
-    echo "این کار تمام تنظیمات 6to4/GRE6 (هر دو سمت) و فورواردینگ مربوط بهش رو پاک می‌کنه."
-    read -p "مطمئنی؟ (y/n): " confirm
+    echo "This will remove all 6to4/GRE6 settings (both sides) and the related forwarding."
+    read -p "Are you sure? (y/n): " confirm
     case "$confirm" in
         y|Y|yes|Yes) ;;
         *)
-            echo "لغو شد."
+            echo "Cancelled."
             return 0
             ;;
     esac
@@ -372,9 +372,9 @@ change_nameserver() {
     # FIX: on systemd-resolved systems /etc/resolv.conf is a symlink and gets
     # regenerated, so a direct edit here can quietly stop having any effect.
     if [ -L "$FILE" ]; then
-        echo "هشدار: $FILE یک symlink هست (معمولا یعنی systemd-resolved مدیریتش می‌کنه)."
-        echo "ممکنه تغییر بعد از ریستارت سرویس یا ریبوت از بین بره -- اگه اینطور شد،"
-        echo "به جاش /etc/systemd/resolved.conf رو ویرایش کن یا از resolvectl استفاده کن."
+        echo "Warning: $FILE is a symlink (this usually means systemd-resolved manages it)."
+        echo "The change may be lost after a service restart or reboot -- if that happens,"
+        echo "edit /etc/systemd/resolved.conf instead, or use resolvectl."
     fi
     if [ -f "$FILE" ]; then
         # FIX: timestamped backup so repeated runs don't overwrite the
